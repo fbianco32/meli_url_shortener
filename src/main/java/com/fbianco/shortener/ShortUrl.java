@@ -1,5 +1,6 @@
 package com.fbianco.shortener;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -11,16 +12,16 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="ShortUrl", 
+@Table(name="shorturl", 
 	   uniqueConstraints={@UniqueConstraint(columnNames={"ID"})})
 public class ShortUrl {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="ID", nullable=false, unique=true, length=11)
+	@Column(name="id", nullable=false, unique=true, length=11)
 	private int id;
 	
-	@Column(name="URL", length=255, nullable=false)
+	@Column(name="url", length=255, nullable=false)
 	private String url;
 	
 	@Column(name="insert_time", nullable=true)
@@ -32,7 +33,7 @@ public class ShortUrl {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String get() {
+	public String getUrl() {
 		return url;
 	}
 	public void setUrl(String url) {
@@ -43,5 +44,11 @@ public class ShortUrl {
 	}
 	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
+	}
+
+	public String encode() {
+		int urlId = this.getId();
+		String shortenedUrl = Base62.encode(BigInteger.valueOf(urlId));
+		return ("localhost:8080/" + shortenedUrl);
 	}
 }
