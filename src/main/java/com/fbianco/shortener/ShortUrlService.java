@@ -1,6 +1,8 @@
 package com.fbianco.shortener;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,26 @@ public class ShortUrlService{
         try {
             shortUrlRepository.deleteById(id);
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        }
+    }
+
+    public HashMap<String, String> shortenBatch(urlsDTO urls) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+        try {
+            HashMap<String, String> shortUrls = new HashMap<String, String>();
+            for (String url : urls.urls) {
+                ShortUrl shortUrl = new ShortUrl();
+                shortUrl.setUrl(url);
+                shortUrl.setInsertTime(new Date());
+                session.persist(shortUrl);
+                shortUrls.put(shortUrl.getUrl(), shortUrl.encode());
+            }
+            session.getTransaction().commit();
+            return shortUrls;
         } catch (Exception e) {
             session.getTransaction().rollback();
             throw e;
