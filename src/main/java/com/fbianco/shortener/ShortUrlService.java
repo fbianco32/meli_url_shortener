@@ -46,4 +46,29 @@ public class ShortUrlService{
             throw e;
         }
 	}
+
+    public void deleteByUrl(String url) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+        try {
+            int urlId = Integer.valueOf(Base62.decode(url).toString(10));
+            shortUrlRepository.deleteById(urlId);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        }
+    }
+
+    public void deleteById(int id) {
+		Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+        try {
+            shortUrlRepository.deleteById(id);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            throw e;
+        }
+    }
 }

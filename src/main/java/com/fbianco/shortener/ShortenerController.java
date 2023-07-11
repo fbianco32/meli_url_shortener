@@ -1,6 +1,7 @@
 package com.fbianco.shortener;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,5 +28,15 @@ public class ShortenerController {
 		RedirectView redirectView = new RedirectView();
 		redirectView.setUrl(longUrl);
 		return redirectView;
+	}
+
+	@DeleteMapping("/{shortUrl}") 
+	public @ResponseBody void deleteByUrl(@PathVariable(value="shortUrl") String shortUrl) {
+		shortUrlService.deleteByUrl(shortUrl);
+	}
+
+	@DeleteMapping("/id/{id}") 
+	public @ResponseBody void deleteByUrl(@PathVariable(value="id") int id) {
+		shortUrlService.deleteById(id);
 	}
 }
